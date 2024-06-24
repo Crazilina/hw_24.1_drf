@@ -17,11 +17,19 @@ class LessonSerializer(ModelSerializer):
 
 
 class CourseDetailSerializer(ModelSerializer):
+    """
+       Сериализатор для модели Course, который включает количество уроков и информацию по всем урокам курса.
+
+       Attributes:
+           lesson_count (SerializerMethodField): Количество уроков в курсе.
+           lessons (LessonSerializer): Информация по всем урокам курса.
+       """
     lesson_count = SerializerMethodField()
+    lessons = LessonSerializer(many=True, read_only=True, source='lesson_set')
 
     def get_lesson_count(self, course):
         return Lesson.objects.filter(course=course).count()
 
     class Meta:
         model = Course
-        fields = ("name", "course_preview", "description", "lesson_count")
+        fields = ("name", "course_preview", "description", "lesson_count", "lessons")

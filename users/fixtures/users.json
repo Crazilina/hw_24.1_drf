@@ -1,0 +1,62 @@
+[
+    {
+        "model": "users.user",
+        "pk": 1,
+        "fields": {
+            "password": "pbkdf2_sha256$260000$Wg3Tc47x9xO5$uRz5TrH80lOTqT41W5R0zRVu4pVIi3JGtBgB4RJ5EwY=",
+            "last_login": "2023-06-01T10:00:00Z",
+            "is_superuser": false,
+            "first_name": "John",
+            "last_name": "Doe",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-06-01T10:00:00Z",
+            "email": "john.doe@example.com",
+            "phone": "1234567890",
+            "city": "Test City",
+            "avatar": "https://example.com/avatar.jpg",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "users.user",
+        "pk": 2,
+        "fields": {
+            "password": "pbkdf2_sha256$260000$Wg3Tc47x9xO5$uRz5TrH80lOTqT41W5R0zRVu4pVIi3JGtBgB4RJ5EwY=",
+            "last_login": "2023-06-02T11:00:00Z",
+            "is_superuser": false,
+            "first_name": "Jane",
+            "last_name": "Doe",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-06-02T11:00:00Z",
+            "email": "jane.doe@example.com",
+            "phone": "0987654321",
+            "city": "Another City",
+            "avatar": "https://example.com/avatar2.jpg",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "users.user",
+        "pk": 3,
+        "fields": {
+            "password": "pbkdf2_sha256$260000$Wg3Tc47x9xO5$uRz5TrH80lOTqT41W5R0zRVu4pVIi3JGtBgB4RJ5EwY=",
+            "last_login": "2023-06-03T12:00:00Z",
+            "is_superuser": false,
+            "first_name": "Alice",
+            "last_name": "Smith",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-06-03T12:00:00Z",
+            "email": "alice.smith@example.com",
+            "phone": "1122334455",
+            "city": "Yet Another City",
+            "avatar": "https://example.com/avatar3.jpg",
+            "groups": [],
+            "user_permissions": []
+        }
+    }
+]

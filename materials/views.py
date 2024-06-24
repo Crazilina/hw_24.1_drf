@@ -3,7 +3,7 @@ from rest_framework.generics import (CreateAPIView, ListAPIView, RetrieveAPIView
                                      DestroyAPIView)
 
 from materials.models import Course, Lesson
-from materials.serializers import CourseSerializer, LessonSerializer
+from materials.serializers import CourseSerializer, LessonSerializer, CourseDetailSerializer
 
 
 class CourseViewSet(ModelViewSet):
@@ -11,7 +11,10 @@ class CourseViewSet(ModelViewSet):
     Viewset для выполнения CRUD операций над моделью Course.
     """
     queryset = Course.objects.all()
-    serializer_class = CourseSerializer
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve']:
+            return CourseDetailSerializer
+        return CourseSerializer
 
 
 class LessonCreateAPIView(CreateAPIView):

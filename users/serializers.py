@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, CharField
 
 from users.models import Payment, User
 
@@ -11,9 +11,21 @@ class PaymentSerializer(ModelSerializer):
         model (Model): Модель Payment.
         fields (str): Поля для сериализации.
     """
+
     class Meta:
         model = Payment
         fields = "__all__"
+
+
+class UserSerializer(ModelSerializer):
+    """
+    Сериализатор для модели User для стандартных CRUD операций.
+    """
+    password = CharField(write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'phone', 'city', 'avatar', 'password']
 
 
 class UserProfileSerializer(ModelSerializer):

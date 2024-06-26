@@ -2,7 +2,9 @@ from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from users.models import Payment, User
-from users.serializers import PaymentSerializer, UserProfileSerializer
+from users.serializers import PaymentSerializer, UserProfileSerializer, UserSerializer
+
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 class PaymentViewSet(ModelViewSet):
@@ -31,6 +33,35 @@ class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
 
     def get_serializer_class(self):
+        """
+        Возвращает соответствующий сериализатор в зависимости от действия.
+
+        - Для действия 'retrieve' возвращает UserProfileSerializer для включения истории платежей.
+        - Для всех остальных действий возвращает UserSerializer.
+        """
         if self.action == "retrieve":
             return UserProfileSerializer
-        return UserProfileSerializer
+        return UserSerializer
+
+    def get_permissions(self):
+        """
+        Возвращает соответствующие разрешения в зависимости от действия.
+
+        - Для действия 'create' возвращает AllowAny для разрешения создания пользователя без аутентификации.
+        - Для всех остальных действий возвращает IsAuthenticated для защиты действий аутентификацией.
+        """
+        if self.action in ['create']:
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
+    def perform_create(self, serializer):
+        """
+        Переопределяет метод сохранения для установки пароля пользователя и активации учетной записи.
+
+        - Устанавливает пароль, используя set_password для сохранения пароля в зашифрованном виде.
+        - Устанавливает is_active в True для активации учетной записи.
+        """
+        user = serializer.save(is_active=True)
+        user.set_password(serializer.validated_data['password'])
+        user.save()
+

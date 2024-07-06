@@ -1,10 +1,13 @@
 from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
+from rest_framework import filters, status
 from users.models import Payment, User
 from users.serializers import PaymentSerializer, UserProfileSerializer, UserSerializer
+from rest_framework.response import Response
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.generics import CreateAPIView
+from users.services import convert_currencies, create_stripe_product, create_stripe_price, create_stripe_session
 
 
 class PaymentViewSet(ModelViewSet):
@@ -24,6 +27,22 @@ class PaymentViewSet(ModelViewSet):
     filterset_fields = ['paid_course', 'paid_lesson', 'payment_method']
     ordering_fields = ['payment_date']
     search_fields = ['user__email']
+
+
+class PaymentCreateAPIView(CreateAPIView):
+    serializer_class = PaymentSerializer
+    queryset = Payment.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        payment = serializer.save(user=self.request.user)
+        amount_in_usd = convert_currencies(payment.amount)
+        product_id = create_stripe_product(name=payment.paid_course.name)
+        price = create_stripe_price(product_id, amount_in_usd)
+        session_id, payment_link = create_stripe_session(price)
+        payment.stripe_session_id = session_id
+        payment.stripe_payment_url = payment_link
+        payment.save()
 
 
 class UserViewSet(ModelViewSet):
@@ -64,4 +83,3 @@ class UserViewSet(ModelViewSet):
         user = serializer.save(is_active=True)
         user.set_password(serializer.validated_data['password'])
         user.save()
-

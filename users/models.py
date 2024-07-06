@@ -37,14 +37,6 @@ class User(AbstractUser):
 class Payment(models.Model):
     """
     Модель для хранения информации о платежах пользователей.
-
-    Attributes:
-        user (ForeignKey): Ссылка на пользователя, который совершил платеж.
-        payment_date (DateTimeField): Дата и время платежа.
-        paid_course (ForeignKey): Ссылка на оплаченный курс (может быть пустым).
-        paid_lesson (ForeignKey): Ссылка на оплаченный урок (может быть пустым).
-        amount (DecimalField): Сумма платежа.
-        payment_method (CharField): Способ оплаты (наличные или перевод на счет).
     """
     PAYMENT_METHOD_CHOICES = [
         ('cash', 'Наличные'),
@@ -57,8 +49,12 @@ class Payment(models.Model):
                                     verbose_name="Оплаченный курс")
     paid_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, blank=True,
                                     verbose_name="Оплаченный урок")
-    amount = models.DecimalField(max_digits=20, decimal_places=2, verbose_name="Сумма оплаты")
+    amount = models.PositiveIntegerField(verbose_name="Сумма оплаты")
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, verbose_name="Способ оплаты")
+
+    stripe_session_id = models.CharField(max_length=255, blank=True, null=True,
+                                         verbose_name="Идентификатор сессии Stripe")
+    stripe_payment_url = models.URLField(max_length=500, blank=True, null=True, verbose_name="Ссылка на оплату в Stripe")
 
     class Meta:
         verbose_name = "Платеж"

@@ -4,17 +4,12 @@ from users.models import Payment, User
 
 
 class PaymentSerializer(ModelSerializer):
-    """
-    Сериализатор для модели Payment.
-
-    Attributes:
-        model (Model): Модель Payment.
-        fields (str): Поля для сериализации.
-    """
+    """ Сериализатор для модели Payment. """
 
     class Meta:
         model = Payment
-        fields = "__all__"
+        fields = '__all__'
+        read_only_fields = ['user', 'stripe_session_id', 'stripe_payment_url']
 
 
 class UserSerializer(ModelSerializer):

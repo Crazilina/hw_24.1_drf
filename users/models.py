@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
 
 from materials.models import Course, Lesson
 
@@ -14,6 +15,7 @@ class User(AbstractUser):
         phone (CharField): Телефон пользователя.
         city (CharField): Город пользователя.
         avatar (ImageField): Аватар пользователя.
+        last_login (DateTimeField): Дата последнего входа пользователя.
     """
     username = None
     email = models.EmailField(unique=True, verbose_name="Почта", help_text="Укажите почту")
@@ -22,6 +24,7 @@ class User(AbstractUser):
     city = models.CharField(max_length=50, blank=True, null=True, verbose_name="Город", help_text="Укажите Ваш город")
     avatar = models.ImageField(upload_to="users/avatars", blank=True, null=True, verbose_name="Аватар",
                                help_text="Загрузите фото")
+    last_login = models.DateTimeField(default=timezone.now, verbose_name="Дата последнего входа")
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

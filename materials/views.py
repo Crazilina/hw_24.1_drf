@@ -12,6 +12,7 @@ from materials.serializers import CourseSerializer, LessonSerializer, CourseDeta
 from rest_framework.permissions import IsAuthenticated
 
 from users.permissions import IsModerator, IsOwner
+from materials.tasks import send_lesson_update_email
 
 
 class CourseViewSet(ModelViewSet):
@@ -83,11 +84,19 @@ class LessonRetrieveAPIView(RetrieveAPIView):
 
 class LessonUpdateAPIView(UpdateAPIView):
     """
-            Контроллер для обновления одного урока.
-            """
+    Контроллер для обновления одного урока.
+    """
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = (IsAuthenticated, IsModerator | IsOwner,)
+
+    def perform_update(self, serializer):
+        """
+        Переопределяет метод обновления объекта для вызова задачи Celery.
+        """
+        super().perform_update(serializer)
+        lesson = self.get_object()
+        send_lesson_update_email.delay(lesson.id)
 
 
 class LessonDestroyAPIView(DestroyAPIView):
